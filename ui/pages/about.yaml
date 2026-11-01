@@ -1,0 +1,10 @@
+{
+  "page_id": "about",
+  "title": "Firestore",
+  "description": "Typed Firestore document reads and writes through a managed Google Cloud native adapter.",
+  "components": [
+    {
+      "ref": "../components/about.yaml"
+    }
+  ]
+}

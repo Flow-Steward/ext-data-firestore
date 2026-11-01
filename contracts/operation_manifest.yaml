@@ -1,0 +1,651 @@
+{
+  "operations": [
+    {
+      "operation_id": "get_document",
+      "display_name": "Get Document",
+      "description": "Get one typed document with createTime and updateTime.",
+      "operation_kind": "action",
+      "workflow_visible": true,
+      "connection_type_ids": [
+        "firestore"
+      ],
+      "category": "data",
+      "inputs": [
+        {
+          "name": "connection_ref",
+          "value_type": "connection_ref",
+          "required": true,
+          "display_name": "Connection"
+        },
+        {
+          "name": "document_path",
+          "value_type": "text",
+          "required": true,
+          "display_name": "Document Path",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "records",
+          "value_type": "json"
+        },
+        {
+          "name": "count",
+          "value_type": "integer"
+        },
+        {
+          "name": "applied",
+          "value_type": "boolean"
+        },
+        {
+          "name": "next_page_token",
+          "value_type": "text"
+        }
+      ],
+      "result_fields": [
+        "result.records",
+        "result.count",
+        "result.applied",
+        "result.next_page_token"
+      ],
+      "error_codes": [
+        "invalid_payload",
+        "invalid_connection",
+        "effect_claim_required",
+        "test_mode_suppressed",
+        "provider_unavailable",
+        "native_unavailable",
+        "invalid_provider_response",
+        "response_too_large",
+        "timeout",
+        "authentication_failed"
+      ]
+    },
+    {
+      "operation_id": "create_document",
+      "display_name": "Create Document",
+      "description": "Create only at a caller-supplied stable path; fails if it exists.",
+      "operation_kind": "action",
+      "workflow_visible": true,
+      "connection_type_ids": [
+        "firestore"
+      ],
+      "category": "data",
+      "inputs": [
+        {
+          "name": "connection_ref",
+          "value_type": "connection_ref",
+          "required": true,
+          "display_name": "Connection"
+        },
+        {
+          "name": "document_path",
+          "value_type": "text",
+          "required": true,
+          "display_name": "Document Path",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "fields",
+          "value_type": "json",
+          "required": true,
+          "display_name": "Fields",
+          "schema": {
+            "type": "object"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "records",
+          "value_type": "json"
+        },
+        {
+          "name": "count",
+          "value_type": "integer"
+        },
+        {
+          "name": "applied",
+          "value_type": "boolean"
+        },
+        {
+          "name": "next_page_token",
+          "value_type": "text"
+        }
+      ],
+      "result_fields": [
+        "result.records",
+        "result.count",
+        "result.applied",
+        "result.next_page_token"
+      ],
+      "error_codes": [
+        "invalid_payload",
+        "invalid_connection",
+        "effect_claim_required",
+        "test_mode_suppressed",
+        "provider_unavailable",
+        "native_unavailable",
+        "invalid_provider_response",
+        "response_too_large",
+        "timeout",
+        "authentication_failed"
+      ]
+    },
+    {
+      "operation_id": "upsert_document",
+      "display_name": "Upsert Document",
+      "description": "Replace all fields at the stable path, creating it if absent. Optional update_time prevents lost updates.",
+      "operation_kind": "action",
+      "workflow_visible": true,
+      "connection_type_ids": [
+        "firestore"
+      ],
+      "category": "data",
+      "inputs": [
+        {
+          "name": "connection_ref",
+          "value_type": "connection_ref",
+          "required": true,
+          "display_name": "Connection"
+        },
+        {
+          "name": "document_path",
+          "value_type": "text",
+          "required": true,
+          "display_name": "Document Path",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "fields",
+          "value_type": "json",
+          "required": true,
+          "display_name": "Fields",
+          "schema": {
+            "type": "object"
+          }
+        },
+        {
+          "name": "update_time",
+          "value_type": "text",
+          "required": false,
+          "display_name": "Update Time",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "records",
+          "value_type": "json"
+        },
+        {
+          "name": "count",
+          "value_type": "integer"
+        },
+        {
+          "name": "applied",
+          "value_type": "boolean"
+        },
+        {
+          "name": "next_page_token",
+          "value_type": "text"
+        }
+      ],
+      "result_fields": [
+        "result.records",
+        "result.count",
+        "result.applied",
+        "result.next_page_token"
+      ],
+      "error_codes": [
+        "invalid_payload",
+        "invalid_connection",
+        "effect_claim_required",
+        "test_mode_suppressed",
+        "provider_unavailable",
+        "native_unavailable",
+        "invalid_provider_response",
+        "response_too_large",
+        "timeout",
+        "authentication_failed"
+      ]
+    },
+    {
+      "operation_id": "update_document",
+      "display_name": "Update Document",
+      "description": "Patch supplied top-level fields of an existing document. Optional update_time precondition.",
+      "operation_kind": "action",
+      "workflow_visible": true,
+      "connection_type_ids": [
+        "firestore"
+      ],
+      "category": "data",
+      "inputs": [
+        {
+          "name": "connection_ref",
+          "value_type": "connection_ref",
+          "required": true,
+          "display_name": "Connection"
+        },
+        {
+          "name": "document_path",
+          "value_type": "text",
+          "required": true,
+          "display_name": "Document Path",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "fields",
+          "value_type": "json",
+          "required": true,
+          "display_name": "Fields",
+          "schema": {
+            "type": "object"
+          }
+        },
+        {
+          "name": "update_time",
+          "value_type": "text",
+          "required": false,
+          "display_name": "Update Time",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "records",
+          "value_type": "json"
+        },
+        {
+          "name": "count",
+          "value_type": "integer"
+        },
+        {
+          "name": "applied",
+          "value_type": "boolean"
+        },
+        {
+          "name": "next_page_token",
+          "value_type": "text"
+        }
+      ],
+      "result_fields": [
+        "result.records",
+        "result.count",
+        "result.applied",
+        "result.next_page_token"
+      ],
+      "error_codes": [
+        "invalid_payload",
+        "invalid_connection",
+        "effect_claim_required",
+        "test_mode_suppressed",
+        "provider_unavailable",
+        "native_unavailable",
+        "invalid_provider_response",
+        "response_too_large",
+        "timeout",
+        "authentication_failed"
+      ]
+    },
+    {
+      "operation_id": "delete_document",
+      "display_name": "Delete Document",
+      "description": "Delete a stable document path, optionally guarded by exists or update_time.",
+      "operation_kind": "action",
+      "workflow_visible": true,
+      "connection_type_ids": [
+        "firestore"
+      ],
+      "category": "data",
+      "inputs": [
+        {
+          "name": "connection_ref",
+          "value_type": "connection_ref",
+          "required": true,
+          "display_name": "Connection"
+        },
+        {
+          "name": "document_path",
+          "value_type": "text",
+          "required": true,
+          "display_name": "Document Path",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "exists",
+          "value_type": "boolean",
+          "required": false,
+          "display_name": "Exists",
+          "schema": {
+            "type": "boolean"
+          }
+        },
+        {
+          "name": "update_time",
+          "value_type": "text",
+          "required": false,
+          "display_name": "Update Time",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "records",
+          "value_type": "json"
+        },
+        {
+          "name": "count",
+          "value_type": "integer"
+        },
+        {
+          "name": "applied",
+          "value_type": "boolean"
+        },
+        {
+          "name": "next_page_token",
+          "value_type": "text"
+        }
+      ],
+      "result_fields": [
+        "result.records",
+        "result.count",
+        "result.applied",
+        "result.next_page_token"
+      ],
+      "error_codes": [
+        "invalid_payload",
+        "invalid_connection",
+        "effect_claim_required",
+        "test_mode_suppressed",
+        "provider_unavailable",
+        "native_unavailable",
+        "invalid_provider_response",
+        "response_too_large",
+        "timeout",
+        "authentication_failed"
+      ]
+    },
+    {
+      "operation_id": "list_documents",
+      "display_name": "List Documents",
+      "description": "List one page from one collection; retain next_page_token for continuation.",
+      "operation_kind": "action",
+      "workflow_visible": true,
+      "connection_type_ids": [
+        "firestore"
+      ],
+      "category": "data",
+      "inputs": [
+        {
+          "name": "connection_ref",
+          "value_type": "connection_ref",
+          "required": true,
+          "display_name": "Connection"
+        },
+        {
+          "name": "collection_path",
+          "value_type": "text",
+          "required": true,
+          "display_name": "Collection Path",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "limit",
+          "value_type": "integer",
+          "required": false,
+          "display_name": "Limit",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20
+          }
+        },
+        {
+          "name": "page_token",
+          "value_type": "text",
+          "required": false,
+          "display_name": "Page Token",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "records",
+          "value_type": "json"
+        },
+        {
+          "name": "count",
+          "value_type": "integer"
+        },
+        {
+          "name": "applied",
+          "value_type": "boolean"
+        },
+        {
+          "name": "next_page_token",
+          "value_type": "text"
+        }
+      ],
+      "result_fields": [
+        "result.records",
+        "result.count",
+        "result.applied",
+        "result.next_page_token"
+      ],
+      "error_codes": [
+        "invalid_payload",
+        "invalid_connection",
+        "effect_claim_required",
+        "test_mode_suppressed",
+        "provider_unavailable",
+        "native_unavailable",
+        "invalid_provider_response",
+        "response_too_large",
+        "timeout",
+        "authentication_failed"
+      ]
+    },
+    {
+      "operation_id": "query_collection",
+      "display_name": "Query Collection",
+      "description": "Query one collection with typed filters and bounded ordering; maximum 100 documents.",
+      "operation_kind": "action",
+      "workflow_visible": true,
+      "connection_type_ids": [
+        "firestore"
+      ],
+      "category": "data",
+      "inputs": [
+        {
+          "name": "connection_ref",
+          "value_type": "connection_ref",
+          "required": true,
+          "display_name": "Connection"
+        },
+        {
+          "name": "collection_path",
+          "value_type": "text",
+          "required": true,
+          "display_name": "Collection Path",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "filters",
+          "value_type": "json",
+          "required": false,
+          "display_name": "Filters",
+          "schema": {
+            "type": "array"
+          }
+        },
+        {
+          "name": "limit",
+          "value_type": "integer",
+          "required": false,
+          "display_name": "Limit",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20
+          }
+        },
+        {
+          "name": "order_by",
+          "value_type": "json",
+          "required": false,
+          "display_name": "Order By",
+          "schema": {
+            "type": "array"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "records",
+          "value_type": "json"
+        },
+        {
+          "name": "count",
+          "value_type": "integer"
+        },
+        {
+          "name": "applied",
+          "value_type": "boolean"
+        },
+        {
+          "name": "next_page_token",
+          "value_type": "text"
+        }
+      ],
+      "result_fields": [
+        "result.records",
+        "result.count",
+        "result.applied",
+        "result.next_page_token"
+      ],
+      "error_codes": [
+        "invalid_payload",
+        "invalid_connection",
+        "effect_claim_required",
+        "test_mode_suppressed",
+        "provider_unavailable",
+        "native_unavailable",
+        "invalid_provider_response",
+        "response_too_large",
+        "timeout",
+        "authentication_failed"
+      ]
+    },
+    {
+      "operation_id": "list_collections",
+      "display_name": "List Collections",
+      "description": "List one page of root or document subcollections.",
+      "operation_kind": "action",
+      "workflow_visible": true,
+      "connection_type_ids": [
+        "firestore"
+      ],
+      "category": "data",
+      "inputs": [
+        {
+          "name": "connection_ref",
+          "value_type": "connection_ref",
+          "required": true,
+          "display_name": "Connection"
+        },
+        {
+          "name": "limit",
+          "value_type": "integer",
+          "required": false,
+          "display_name": "Limit",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20
+          }
+        },
+        {
+          "name": "page_token",
+          "value_type": "text",
+          "required": false,
+          "display_name": "Page Token",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "parent_path",
+          "value_type": "text",
+          "required": false,
+          "display_name": "Parent Path",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "records",
+          "value_type": "json"
+        },
+        {
+          "name": "count",
+          "value_type": "integer"
+        },
+        {
+          "name": "applied",
+          "value_type": "boolean"
+        },
+        {
+          "name": "next_page_token",
+          "value_type": "text"
+        }
+      ],
+      "result_fields": [
+        "result.records",
+        "result.count",
+        "result.applied",
+        "result.next_page_token"
+      ],
+      "error_codes": [
+        "invalid_payload",
+        "invalid_connection",
+        "effect_claim_required",
+        "test_mode_suppressed",
+        "provider_unavailable",
+        "native_unavailable",
+        "invalid_provider_response",
+        "response_too_large",
+        "timeout",
+        "authentication_failed"
+      ]
+    }
+  ]
+}

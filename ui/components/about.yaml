@@ -1,0 +1,6 @@
+{
+  "component_id": "firestore_about",
+  "type": "markdown",
+  "title": "Firestore",
+  "content": "Typed Firestore document reads and writes. Configure exactly one secret: a short-lived OAuth access token or service-account JSON. No triggers, Firebase Rules management, or Firebase Realtime Database support. Writes require a durable host external-effect claim and are suppressed in test mode."
+}

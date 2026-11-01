@@ -1,0 +1,418 @@
+{
+  "actions": [
+    {
+      "action_id": "get_document",
+      "workflow_visible": true,
+      "title": "Get Document",
+      "description": "Get one typed document with createTime and updateTime.",
+      "required_scopes": [
+        "extension:invoke"
+      ],
+      "handler": {
+        "mode": "extension"
+      },
+      "parameters": [
+        {
+          "name": "connection_ref",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "document_path",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "result_fields": [
+        "result.records",
+        "result.count",
+        "result.applied",
+        "result.next_page_token"
+      ],
+      "error_codes": [
+        "invalid_payload",
+        "invalid_connection",
+        "effect_claim_required",
+        "test_mode_suppressed",
+        "provider_unavailable",
+        "native_unavailable",
+        "invalid_provider_response",
+        "response_too_large",
+        "timeout",
+        "authentication_failed"
+      ],
+      "mutates_platform": false
+    },
+    {
+      "action_id": "create_document",
+      "workflow_visible": true,
+      "title": "Create Document",
+      "description": "Create only at a caller-supplied stable path; fails if it exists.",
+      "required_scopes": [
+        "extension:invoke"
+      ],
+      "handler": {
+        "mode": "extension"
+      },
+      "parameters": [
+        {
+          "name": "connection_ref",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "document_path",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "fields",
+          "type": "object",
+          "required": true
+        }
+      ],
+      "result_fields": [
+        "result.records",
+        "result.count",
+        "result.applied",
+        "result.next_page_token"
+      ],
+      "error_codes": [
+        "invalid_payload",
+        "invalid_connection",
+        "effect_claim_required",
+        "test_mode_suppressed",
+        "provider_unavailable",
+        "native_unavailable",
+        "invalid_provider_response",
+        "response_too_large",
+        "timeout",
+        "authentication_failed"
+      ],
+      "mutates_platform": false
+    },
+    {
+      "action_id": "upsert_document",
+      "workflow_visible": true,
+      "title": "Upsert Document",
+      "description": "Replace all fields at the stable path, creating it if absent. Optional update_time prevents lost updates.",
+      "required_scopes": [
+        "extension:invoke"
+      ],
+      "handler": {
+        "mode": "extension"
+      },
+      "parameters": [
+        {
+          "name": "connection_ref",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "document_path",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "fields",
+          "type": "object",
+          "required": true
+        },
+        {
+          "name": "update_time",
+          "type": "string",
+          "required": false
+        }
+      ],
+      "result_fields": [
+        "result.records",
+        "result.count",
+        "result.applied",
+        "result.next_page_token"
+      ],
+      "error_codes": [
+        "invalid_payload",
+        "invalid_connection",
+        "effect_claim_required",
+        "test_mode_suppressed",
+        "provider_unavailable",
+        "native_unavailable",
+        "invalid_provider_response",
+        "response_too_large",
+        "timeout",
+        "authentication_failed"
+      ],
+      "mutates_platform": false
+    },
+    {
+      "action_id": "update_document",
+      "workflow_visible": true,
+      "title": "Update Document",
+      "description": "Patch supplied top-level fields of an existing document. Optional update_time precondition.",
+      "required_scopes": [
+        "extension:invoke"
+      ],
+      "handler": {
+        "mode": "extension"
+      },
+      "parameters": [
+        {
+          "name": "connection_ref",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "document_path",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "fields",
+          "type": "object",
+          "required": true
+        },
+        {
+          "name": "update_time",
+          "type": "string",
+          "required": false
+        }
+      ],
+      "result_fields": [
+        "result.records",
+        "result.count",
+        "result.applied",
+        "result.next_page_token"
+      ],
+      "error_codes": [
+        "invalid_payload",
+        "invalid_connection",
+        "effect_claim_required",
+        "test_mode_suppressed",
+        "provider_unavailable",
+        "native_unavailable",
+        "invalid_provider_response",
+        "response_too_large",
+        "timeout",
+        "authentication_failed"
+      ],
+      "mutates_platform": false
+    },
+    {
+      "action_id": "delete_document",
+      "workflow_visible": true,
+      "title": "Delete Document",
+      "description": "Delete a stable document path, optionally guarded by exists or update_time.",
+      "required_scopes": [
+        "extension:invoke"
+      ],
+      "handler": {
+        "mode": "extension"
+      },
+      "parameters": [
+        {
+          "name": "connection_ref",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "document_path",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "exists",
+          "type": "boolean",
+          "required": false
+        },
+        {
+          "name": "update_time",
+          "type": "string",
+          "required": false
+        }
+      ],
+      "result_fields": [
+        "result.records",
+        "result.count",
+        "result.applied",
+        "result.next_page_token"
+      ],
+      "error_codes": [
+        "invalid_payload",
+        "invalid_connection",
+        "effect_claim_required",
+        "test_mode_suppressed",
+        "provider_unavailable",
+        "native_unavailable",
+        "invalid_provider_response",
+        "response_too_large",
+        "timeout",
+        "authentication_failed"
+      ],
+      "mutates_platform": false
+    },
+    {
+      "action_id": "list_documents",
+      "workflow_visible": true,
+      "title": "List Documents",
+      "description": "List one page from one collection; retain next_page_token for continuation.",
+      "required_scopes": [
+        "extension:invoke"
+      ],
+      "handler": {
+        "mode": "extension"
+      },
+      "parameters": [
+        {
+          "name": "connection_ref",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "collection_path",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "limit",
+          "type": "integer",
+          "required": false
+        },
+        {
+          "name": "page_token",
+          "type": "string",
+          "required": false
+        }
+      ],
+      "result_fields": [
+        "result.records",
+        "result.count",
+        "result.applied",
+        "result.next_page_token"
+      ],
+      "error_codes": [
+        "invalid_payload",
+        "invalid_connection",
+        "effect_claim_required",
+        "test_mode_suppressed",
+        "provider_unavailable",
+        "native_unavailable",
+        "invalid_provider_response",
+        "response_too_large",
+        "timeout",
+        "authentication_failed"
+      ],
+      "mutates_platform": false
+    },
+    {
+      "action_id": "query_collection",
+      "workflow_visible": true,
+      "title": "Query Collection",
+      "description": "Query one collection with typed filters and bounded ordering; maximum 100 documents.",
+      "required_scopes": [
+        "extension:invoke"
+      ],
+      "handler": {
+        "mode": "extension"
+      },
+      "parameters": [
+        {
+          "name": "connection_ref",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "collection_path",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "filters",
+          "type": "object",
+          "required": false
+        },
+        {
+          "name": "limit",
+          "type": "integer",
+          "required": false
+        },
+        {
+          "name": "order_by",
+          "type": "object",
+          "required": false
+        }
+      ],
+      "result_fields": [
+        "result.records",
+        "result.count",
+        "result.applied",
+        "result.next_page_token"
+      ],
+      "error_codes": [
+        "invalid_payload",
+        "invalid_connection",
+        "effect_claim_required",
+        "test_mode_suppressed",
+        "provider_unavailable",
+        "native_unavailable",
+        "invalid_provider_response",
+        "response_too_large",
+        "timeout",
+        "authentication_failed"
+      ],
+      "mutates_platform": false
+    },
+    {
+      "action_id": "list_collections",
+      "workflow_visible": true,
+      "title": "List Collections",
+      "description": "List one page of root or document subcollections.",
+      "required_scopes": [
+        "extension:invoke"
+      ],
+      "handler": {
+        "mode": "extension"
+      },
+      "parameters": [
+        {
+          "name": "connection_ref",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "limit",
+          "type": "integer",
+          "required": false
+        },
+        {
+          "name": "page_token",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "parent_path",
+          "type": "string",
+          "required": false
+        }
+      ],
+      "result_fields": [
+        "result.records",
+        "result.count",
+        "result.applied",
+        "result.next_page_token"
+      ],
+      "error_codes": [
+        "invalid_payload",
+        "invalid_connection",
+        "effect_claim_required",
+        "test_mode_suppressed",
+        "provider_unavailable",
+        "native_unavailable",
+        "invalid_provider_response",
+        "response_too_large",
+        "timeout",
+        "authentication_failed"
+      ],
+      "mutates_platform": false
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "connection_types": [
+    {
+      "connection_type_id": "firestore",
+      "display_name": "Firestore",
+      "description": "Official Firestore Google Cloud database with TLS and explicit project/database selection.",
+      "config_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "project"
+        ],
+        "properties": {
+          "project": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 63
+          },
+          "database": {
+            "type": "string",
+            "default": "(default)"
+          },
+          "request_timeout_seconds": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30,
+            "default": 15
+          }
+        }
+      },
+      "secret_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [],
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Short-lived OAuth access token",
+            "maxLength": 8192
+          },
+          "service_account_json": {
+            "type": "string",
+            "title": "Service account JSON",
+            "maxLength": 16384
+          }
+        }
+      },
+      "capabilities": {
+        "test_connection": false,
+        "live_request": true,
+        "workflow_trigger": false,
+        "callback_ingress": false
+      },
+      "safety_profile": {
+        "requires_https": true,
+        "requires_host_allowlist": true,
+        "stores_secret_values": false
+      }
+    }
+  ]
+}

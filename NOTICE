@@ -1,0 +1,11 @@
+Flow Steward Firestore extension
+Copyright 2026 Flow Steward contributors
+Licensed under Apache License 2.0. See LICENSE.
+
+Native adapter dependency versions are pinned by Google MCP Toolbox v1.3.0,
+commit b0010060a939455d91e4f8ba62dc3e72b1892469 (Apache-2.0).
+The native adapter is an independently authored replacement for the upstream
+Firestore runtime surface, using the official Google Cloud Firestore v1 client
+and protobuf types under that dependency lock. It does not include Firebase
+Rules or upstream high-level Firestore CRUD implementations.
+Third-party Go module license notices are included in third_party/.

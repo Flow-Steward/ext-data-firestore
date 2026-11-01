@@ -1,0 +1,17 @@
+{
+  "tag": "v1.3.0",
+  "commit": "b0010060a939455d91e4f8ba62dc3e72b1892469",
+  "adaptation": "native/main.go replaces upstream high-level Firestore tools; official apiv1 protobuf requests; Toolbox dependency lock",
+  "go_image": "golang:1.26.2-bookworm@sha256:47ce5636e9936b2c5cbf708925578ef386b4f8872aec74a67bd13a627d242b19",
+  "source_sha256": "759e6e84a922351796216ccf28b500313a5531a3be147fee4eb49e617efb23f2",
+  "binaries": {
+    "linux-amd64": {
+      "sha256": "f0d74a5a2544cf8dbe4c8f82cde72ccb3e928f7582ad56058c1c05b7407122bf",
+      "size": 16281726
+    },
+    "linux-arm64": {
+      "sha256": "dab1ab0edb60c9197cd4b7c0d82e9a1698e2092ea3647042530ca7adf6c21ecf",
+      "size": 15204478
+    }
+  }
+}
