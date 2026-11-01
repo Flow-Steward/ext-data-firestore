@@ -162,8 +162,10 @@ def test_actual_release_native_archive_roundtrip(tmp_path, target):
             "LICENSE",
             "NOTICE",
             "scripts/build_toolbox.sh",
-            "scripts/patches/0001-flowsteward-firestore-safety.patch",
-            "scripts/patches/0002-firestore-driver-socket-dialer.patch",
+            "scripts/build_inside.sh",
+            "native/main.go",
+            "native/main_test.go",
+            "third_party/cloud.google.com_go_firestore/LICENSE",
             "toolbox-provenance.json",
         ):
             assert prefix + required in archive.namelist()
