@@ -36,3 +36,12 @@ def test_contract_parity_and_no_triggers():
         "access_token",
         "service_account_json",
     }
+
+
+def test_action_parameter_types_match_operation_schemas():
+    actions = {a["action_id"]: a for a in load("ui/actions/actions.yaml")["actions"]}
+    for operation in load("contracts/operation_manifest.yaml")["operations"]:
+        parameters = {p["name"]: p for p in actions[operation["operation_id"]]["parameters"]}
+        for item in operation["inputs"]:
+            if "schema" in item:
+                assert parameters[item["name"]]["type"] == item["schema"]["type"]
