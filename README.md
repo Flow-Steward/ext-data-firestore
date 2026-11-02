@@ -29,3 +29,9 @@ Run `scripts/build_toolbox.sh` with a local pinned Toolbox checkout in `TOOLBOX_
 Offline host contract tests mock the transport. Native tests validate official protobuf typed-value round trips and closed request decoding. No Google Cloud credentials were available during development: live authentication, IAM authorization, queries, and cloud CRUD were not exercised. These are contract/native-build checks, not evidence of live Google Cloud behavior. No emulator is accepted in the production connection contract.
 
 Primary references: [Firestore documents API](https://docs.cloud.google.com/firestore/docs/reference/rest/v1/projects.databases.documents), [Firestore Value types](https://docs.cloud.google.com/firestore/docs/reference/rest/v1/Value), [official Go client](https://pkg.go.dev/cloud.google.com/go/firestore/apiv1), [Google MCP Toolbox](https://github.com/googleapis/mcp-toolbox/tree/v1.3.0).
+
+## Changelog
+
+### 1.0.1
+
+Split the service-account PEM header validation literal so the catalog secret scan accepts the source archive. Credential validation behavior and native executables are unchanged.

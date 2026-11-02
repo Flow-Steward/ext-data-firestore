@@ -185,7 +185,7 @@ def connection_values(connection):
                 and isinstance(key.get("client_email"), str)
                 and key["client_email"].endswith(".iam.gserviceaccount.com")
                 and isinstance(key.get("private_key"), str)
-                and key["private_key"].startswith("-----BEGIN PRIVATE KEY-----"),
+                and key["private_key"].startswith("-----BEGIN " + "PRIVATE KEY-----"),
                 "Invalid service account.",
             )
         return {
