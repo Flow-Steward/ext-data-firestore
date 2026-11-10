@@ -20,7 +20,7 @@ Writes require a host durable `external_effect_id`; test mode validates inputs t
 
 ## Native build and packages
 
-`native/main.go` is a managed source adaptation built under the pinned Google MCP Toolbox v1.3.0 (`b0010060a939455d91e4f8ba62dc3e72b1892469`) dependency lock. It replaces upstream high-level Firestore CRUD with the official Google low-level Firestore v1 GAPIC/protobuf client. Upstream high-level conversion removes type tags, Add generates random IDs, BulkWriter retries, and source initialization creates a Firebase Rules client; none of those implementations is included in the native runtime. The binary is not an unmodified Google Toolbox distribution or an MCP server. The Python adapter uses a bounded private single-request JSON protocol.
+`native/main.go` is a managed source adaptation built under the pinned Google MCP Toolbox v1.16.0 (`06ea49d9a487a72c22419b5a8d5c22c11f0d7485`) dependency lock. It replaces upstream high-level Firestore CRUD with the official Google low-level Firestore v1 GAPIC/protobuf client. Upstream high-level conversion removes type tags, Add generates random IDs, BulkWriter retries, and source initialization creates a Firebase Rules client; none of those implementations is included in the native runtime. The binary is not an unmodified Google Toolbox distribution or an MCP server. The Python adapter uses a bounded private single-request JSON protocol.
 
 Run `scripts/build_toolbox.sh` with a local pinned Toolbox checkout in `TOOLBOX_SOURCE` (default `/private/tmp/fs-toolbox-upstream-20261101`). It snapshots source over stdin into the pinned Go container and builds static Linux AMD64 and ARM64 executables. Builds use `--cpus 1 --memory 2g`. `toolbox-provenance.json` records source and binary digests; runtime verifies its packaged executable digest. Run `python3 scripts/package_extension.py --help` to produce target-specific installer ZIPs. Archives include exactly one matching native ELF binary and architecture metadata.
 
@@ -28,7 +28,7 @@ Run `scripts/build_toolbox.sh` with a local pinned Toolbox checkout in `TOOLBOX_
 
 Offline host contract tests mock the transport. Native tests validate official protobuf typed-value round trips and closed request decoding. No Google Cloud credentials were available during development: live authentication, IAM authorization, queries, and cloud CRUD were not exercised. These are contract/native-build checks, not evidence of live Google Cloud behavior. No emulator is accepted in the production connection contract.
 
-Primary references: [Firestore documents API](https://docs.cloud.google.com/firestore/docs/reference/rest/v1/projects.databases.documents), [Firestore Value types](https://docs.cloud.google.com/firestore/docs/reference/rest/v1/Value), [official Go client](https://pkg.go.dev/cloud.google.com/go/firestore/apiv1), [Google MCP Toolbox](https://github.com/googleapis/mcp-toolbox/tree/v1.3.0).
+Primary references: [Firestore documents API](https://docs.cloud.google.com/firestore/docs/reference/rest/v1/projects.databases.documents), [Firestore Value types](https://docs.cloud.google.com/firestore/docs/reference/rest/v1/Value), [official Go client](https://pkg.go.dev/cloud.google.com/go/firestore/apiv1), [Google MCP Toolbox](https://github.com/googleapis/mcp-toolbox/tree/v1.16.0).
 
 ## Changelog
 

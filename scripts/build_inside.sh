@@ -1,29 +1,32 @@
 #!/bin/sh
 set -eu
-mkdir -p /src
-mv /src/native /src/managed-firestore
+cp -a /upstream /src
 cd /src
-git apply scripts/patches/0000-security-baseline.patch
-printf "%s\n" "7f367f79f68cc28cfcb8c7d36c5533ef79f5016aaeba4443a795a46132105fb5  go.mod" "ca2ace78373b79e7c2b048e69ef22abfb93f1b3a537b7f035ad7c1a0c28542e9  go.sum" | sha256sum -c -
-export GOFLAGS=-mod=readonly GOTOOLCHAIN=local
-sha256sum go.mod go.sum > /tmp/fs-security-module-lock
-gofmt -w managed-firestore/*.go
-go test -p 1 ./managed-firestore
+git apply /out/scripts/patches/0000-security-baseline.patch
+printf '%s\n' '1c59a76307271df0a6992d9db406f9c49ba670dfb898e029bbc86136adcc9294  go.mod' 'd0e98fac8a9d4677bc239a668b472dd2f459ab65f3d0fec7ceb2a50bb6138841  go.sum' | sha256sum -c -
+export GOFLAGS=-mod=readonly GOTOOLCHAIN=local GOMAXPROCS=2
+test "$(go version | cut -d ' ' -f 3)" = go1.27.3
+git apply /out/scripts/patches/0000-approved-prebuilt-profiles.patch
+cp -a /out/native /src/managed-firestore
+sha256sum go.mod go.sum > /tmp/fs-module-lock
+go test -p 1 ./managed-firestore -count=1
+export SOURCE_DATE_EPOCH=1793908560
+for target in linux-amd64 linux-arm64; do
+ arch=${target#linux-}
+ mkdir -p /out/bin/$target
+ CGO_ENABLED=0 GOOS=linux GOARCH=$arch go build -p 1 -trimpath -buildvcs=false -ldflags "-s -w -buildid= -X github.com/googleapis/mcp-toolbox/cmd.buildType=flowsteward.firestore -X github.com/googleapis/mcp-toolbox/cmd.commitSha=06ea49d9a487a72c22419b5a8d5c22c11f0d7485" -o /out/bin/$target/toolbox ./managed-firestore
+ chmod 0755 /out/bin/$target/toolbox
+ echo "[PASS] $target $(stat -c %s /out/bin/$target/toolbox) bytes"
+done
+sha256sum -c /tmp/fs-module-lock
 mkdir -p /out/third_party/go
 cp /usr/local/go/LICENSE /out/third_party/go/LICENSE
-go list -deps -f "{{if .Module}}{{.Module.Path}}|{{.Module.Dir}}{{end}}" ./managed-firestore | sort -u > /tmp/modules
-while IFS="|" read -r name directory; do
-  test -n "$name" || continue
-  safe=$(printf "%s" "$name" | tr / _)
-  mkdir -p "/out/third_party/$safe"
-  for notice in LICENSE LICENSE.txt LICENSE.md NOTICE; do
-    if test -f "$directory/$notice"; then cp "$directory/$notice" "/out/third_party/$safe/$notice"; fi
-  done
+go list -deps -f '{{if .Module}}{{.Module.Path}}|{{.Module.Dir}}{{end}}' ./managed-firestore | sort -u > /tmp/modules
+while IFS='|' read -r name directory; do
+ test -n "$name" || continue
+ safe=$(printf '%s' "$name" | tr / _)
+ mkdir -p "/out/third_party/$safe"
+ for notice in LICENSE LICENSE.txt LICENSE.md NOTICE; do
+  if test -f "$directory/$notice"; then cp "$directory/$notice" "/out/third_party/$safe/$notice"; fi
+ done
 done < /tmp/modules
-for arch in amd64 arm64; do
-  mkdir -p /out/bin/linux-$arch
-  CGO_ENABLED=0 GOOS=linux GOARCH=$arch go build -p 1 -trimpath -buildvcs=false -ldflags "-s -w -buildid=" -o /out/bin/linux-$arch/toolbox ./managed-firestore
-  chmod 0755 /out/bin/linux-$arch/toolbox
-done
-
-sha256sum -c /tmp/fs-security-module-lock

@@ -1,28 +1,14 @@
-"""Record native build provenance and digests."""
-
-import hashlib
-import json
+"""Record exact source, patches, toolchain and both native payload digests."""
+import hashlib,json
 from pathlib import Path
-
-r = Path(__file__).resolve().parents[1]
-records = {}
-for target in ("linux-amd64", "linux-arm64"):
-    p = r / "bin" / target / "toolbox"
-    records[target] = {
-        "sha256": hashlib.sha256(p.read_bytes()).hexdigest(),
-        "size": p.stat().st_size,
-    }
-(r / "toolbox-provenance.json").write_text(
-    json.dumps(
-        {
-            "tag": "v1.3.0",
-            "commit": "b0010060a939455d91e4f8ba62dc3e72b1892469",
-            "adaptation": "native/main.go replaces upstream high-level Firestore tools; official apiv1 protobuf requests; Toolbox dependency lock",
-            "go_image": "golang:1.26.10-bookworm@sha256:5de7c99eb78ca5e515a4c340235d0955ec5964a5071c492c15503d7c267da473",
-            "source_sha256": hashlib.sha256((r / "native/main.go").read_bytes()).hexdigest(),
-            "binaries": records,
-        },
-        indent=2,
-    )
-    + "\n"
-)
+root=Path(__file__).resolve().parents[1]
+def digest(path):return hashlib.sha256(path.read_bytes()).hexdigest()
+info=json.loads((root/'scripts/build-config.json').read_text())
+if info.get('patch'):info['patch_sha256']=digest(root/info['patch'])
+if 'driver' in info and info['driver'].get('patch'):info['driver']['patch_sha256']=digest(root/info['driver']['patch'])
+if (root/'native/main.go').exists():info['source_sha256']=digest(root/'native/main.go')
+info['approved_profiles']={'patch':'scripts/patches/0000-approved-prebuilt-profiles.patch','sha256':digest(root/'scripts/patches/0000-approved-prebuilt-profiles.patch')}
+info['binaries']={}
+for target in ('linux-amd64','linux-arm64'):
+ p=root/'bin'/target/'toolbox';info['binaries'][target]={'sha256':digest(p),'size':p.stat().st_size}
+(root/'toolbox-provenance.json').write_text(json.dumps(info,indent=2)+'\n')

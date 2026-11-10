@@ -21,14 +21,24 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+type command struct {
+	RPC     string          `json:"rpc"`
+	Request json.RawMessage `json:"request"`
+}
+
 type input struct {
-	ID      int `json:"id"`
-	Command struct {
-		RPC     string          `json:"rpc"`
-		Request json.RawMessage `json:"request"`
-	} `json:"command"`
-	Timeout int    `json:"timeout_seconds"`
-	Token   string `json:"access_token"`
+	ID      int     `json:"id"`
+	Command command `json:"command"`
+	Timeout int     `json:"timeout_seconds"`
+	Token   string  `json:"access_token"`
+}
+
+// Share the transport guards with every connection made by this adapter.
+func grpcTransportOptions() []grpc.DialOption {
+	return []grpc.DialOption{
+		grpc.WithDisableRetry(),
+		grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(480*1024), grpc.MaxRetryRPCBufferSize(0)),
+	}
 }
 
 func main() {
@@ -50,7 +60,10 @@ func run() ([]json.RawMessage, string) {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(in.Timeout)*time.Second)
 	defer cancel()
-	opts := []option.ClientOption{option.WithEndpoint("firestore.googleapis.com:443"), option.WithGRPCDialOption(grpc.WithDisableRetry()), option.WithGRPCDialOption(grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(480*1024), grpc.MaxRetryRPCBufferSize(0)))}
+	opts := []option.ClientOption{option.WithEndpoint("firestore.googleapis.com:443")}
+	for _, transportOption := range grpcTransportOptions() {
+		opts = append(opts, option.WithGRPCDialOption(transportOption))
+	}
 	if in.Token != "" {
 		opts = append(opts, option.WithTokenSource(oauth2.StaticTokenSource(&oauth2.Token{AccessToken: in.Token})))
 	} else {
@@ -70,6 +83,11 @@ func run() ([]json.RawMessage, string) {
 		return nil, "provider_unavailable"
 	}
 	defer client.Close()
+	return execute(ctx, client, in.Command)
+}
+
+func execute(ctx context.Context, client *firestore.Client, cmd command) ([]json.RawMessage, string) {
+	var err error
 	// Explicit override defeats GAPIC default retries for every request, including writes.
 	noRetry := gax.WithRetry(func() gax.Retryer { return nil })
 	result := []json.RawMessage{}
@@ -86,8 +104,8 @@ func run() ([]json.RawMessage, string) {
 		result = append(result, b)
 		return true
 	}
-	decode := func(message proto.Message) bool { return protojson.Unmarshal(in.Command.Request, message) == nil }
-	switch in.Command.RPC {
+	decode := func(message proto.Message) bool { return protojson.Unmarshal(cmd.Request, message) == nil }
+	switch cmd.RPC {
 	case "get":
 		r := &pb.GetDocumentRequest{}
 		if !decode(r) {
