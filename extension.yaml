@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "extension_id": "flowsteward.firestore",
   "kind": "tool_provider",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "release_stage": "active",
   "display_name": "Firestore",
   "description": "Typed Firestore document reads and writes through a managed Google Cloud native adapter.",
