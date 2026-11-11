@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "extension_id": "flowsteward.firestore",
+  "runtime_targets": [
+    "linux-amd64",
+    "linux-arm64"
+  ],
+  "package_script": "scripts/package_extension.py",
+  "test_requirements": [
+    "requirements-dev.txt"
+  ],
+  "test_paths": [
+    "tests/test_contracts.py",
+    "tests/test_license.py",
+    "tests/test_package.py",
+    "tests/test_runtime.py",
+    "tests/test_security_floor.py",
+    "tests/test_transport.py"
+  ],
+  "additional_assets": [],
+  "payload_sources": []
+}

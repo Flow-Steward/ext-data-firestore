@@ -15,7 +15,7 @@ import zipfile
 from pathlib import Path
 
 EXTENSION_ID = "flowsteward.firestore"
-VERSION = "1.0.6"
+VERSION = "1.0.7"
 TOP_FOLDER = "flowsteward_firestore"
 SOURCE_DATE_EPOCH = 1793908560
 MAX_ARCHIVE_BYTES = 50 * 1024 * 1024
@@ -27,6 +27,7 @@ PAYLOAD_DIRECTORIES = frozenset(
 EXCLUDED_DIRECTORIES = frozenset(
     {
         ".git",
+        ".github",
         ".venv",
         "venv",
         ".fs-python",
