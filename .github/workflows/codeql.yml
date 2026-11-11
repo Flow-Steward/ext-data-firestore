@@ -1,0 +1,98 @@
+name: CodeQL
+
+on:
+  push:
+    branches-ignore:
+      - "dependabot/**"
+  pull_request:
+  schedule:
+    - cron: "25 1 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+cache-mode: none
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: actions
+            build-mode: none
+          - language: go
+            build-mode: manual
+          - language: python
+            build-mode: none
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Prepare the locked Firestore Go module
+        if: matrix.language == 'go'
+        shell: bash
+        run: |
+          set -euo pipefail
+          upstream_commit=$(python3 - <<'PYTHON'
+          import json
+          import re
+          from pathlib import Path
+          commit = json.loads(Path("scripts/build-config.json").read_text())["upstream_commit"]
+          if not isinstance(commit, str) or re.fullmatch(r"[0-9a-f]{40}", commit) is None:
+              raise SystemExit("The upstream commit must be a full 40-character SHA.")
+          print(commit)
+          PYTHON
+          )
+          for module_file in go.mod go.sum; do
+            curl --fail --show-error --silent --location \
+              --proto '=https' --proto-redir '=https' \
+              --connect-timeout 10 --max-time 60 \
+              --retry 3 --retry-max-time 180 --max-filesize 2097152 \
+              "https://raw.githubusercontent.com/googleapis/mcp-toolbox/$upstream_commit/$module_file" \
+              --output "native/$module_file"
+          done
+          git apply --directory=native scripts/patches/0000-security-baseline.patch
+          printf '%s\n' \
+            'f547c08375f72e483c269c214f1a5190a8d81237687455549f829aac5a8d7d51  native/go.mod' \
+            '5c713561f5dce0e9c5c38977c925f54c94a4bec1095642cb6d04baaa612beacd  native/go.sum' \
+            | sha256sum -c -
+      - name: Set up the Go compiler used by the Firestore build
+        if: matrix.language == 'go'
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: '1.27.4'
+          cache: false
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@33d7b85da1a04171e211befe2c739303b9a4c066 # v4.39.3
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+          dependency-caching: false
+      - name: Build the Firestore adapter for CodeQL
+        if: matrix.language == 'go'
+        working-directory: native
+        shell: bash
+        env:
+          GOFLAGS: -mod=readonly
+          GOTOOLCHAIN: local
+          GOMAXPROCS: '2'
+          CGO_ENABLED: '0'
+        run: |
+          set -euo pipefail
+          go build -p 1 -buildvcs=false -o "$RUNNER_TEMP/firestore-codeql" .
+          printf '%s\n' \
+            'f547c08375f72e483c269c214f1a5190a8d81237687455549f829aac5a8d7d51  go.mod' \
+            '5c713561f5dce0e9c5c38977c925f54c94a4bec1095642cb6d04baaa612beacd  go.sum' \
+            | sha256sum -c -
+      - name: Analyze and upload results
+        uses: github/codeql-action/analyze@33d7b85da1a04171e211befe2c739303b9a4c066 # v4.39.3
+        with:
+          category: "/language:${{ matrix.language }}"
