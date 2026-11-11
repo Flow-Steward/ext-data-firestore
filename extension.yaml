@@ -2,10 +2,10 @@
   "manifest_version": 2,
   "extension_id": "flowsteward.firestore",
   "kind": "tool_provider",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "release_stage": "active",
   "display_name": "Firestore",
-  "description": "Typed Firestore document reads and writes through a managed Google Cloud native adapter.",
+  "description": "Use Google Cloud Firestore documents in Flow Steward workflows for application record lookup, collection queries and updates. Actions read a document, create at a stable path, replace or upsert its fields, patch selected top-level fields, and delete it. Collection actions list documents, query with typed filters and ordering, or list root collections and subcollections. Listing returns a page token for explicit continuation.\n\nFirestore's typed Value JSON supports strings, booleans, numbers, timestamps, bytes, geographic points, references, arrays and maps. Integer values can retain full int64 precision as strings inside their Firestore type representation. Optional update-time preconditions help reject stale updates, replacements and deletes; creation fails when the supplied path already exists. Choose patches for individual field changes or replacements when a workflow owns the complete document.\n\nConfigure the Google Cloud project and database with an access token or service-account JSON and appropriate Firestore IAM permissions. Queries and pages return at most 100 documents, and some filters require an existing Firestore index. Document deletion does not recursively remove subcollections. The connector provides Firestore document operations rather than transactions, triggers, Rules management or Firebase Realtime Database access.",
   "lifecycle": {
     "data_schema_version": 1,
     "data_migrations": []
@@ -20,7 +20,8 @@
       "documents",
       "google-cloud"
     ],
-    "summary": "Bounded typed Firestore document CRUD and query."
+    "summary": "Get, query, create, patch, replace and delete typed Firestore documents, with pagination and version preconditions.",
+    "setup_summary": "Create a Firestore project connection with the Google Cloud project, database and exactly one secret: an access token or service-account JSON. Grant the required Firestore IAM permissions and provision any indexes needed by your collection queries."
   },
   "features": [
     "tool",

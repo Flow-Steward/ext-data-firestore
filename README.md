@@ -1,5 +1,13 @@
 # Firestore for Flow Steward
 
+Use Google Cloud Firestore documents in Flow Steward workflows for application record lookup, collection queries and updates. Actions read a document, create at a stable path, replace or upsert its fields, patch selected top-level fields, and delete it. Collection actions list documents, query with typed filters and ordering, or list root collections and subcollections. Listing returns a page token for explicit continuation.
+
+Firestore's typed Value JSON supports strings, booleans, numbers, timestamps, bytes, geographic points, references, arrays and maps. Integer values can retain full int64 precision as strings inside their Firestore type representation. Optional update-time preconditions help reject stale updates, replacements and deletes; creation fails when the supplied path already exists. Choose patches for individual field changes or replacements when a workflow owns the complete document.
+
+Configure the Google Cloud project and database with an access token or service-account JSON and appropriate Firestore IAM permissions. Queries and pages return at most 100 documents, and some filters require an existing Firestore index. Document deletion does not recursively remove subcollections. The connector provides Firestore document operations rather than transactions, triggers, Rules management or Firebase Realtime Database access.
+
+## Runtime and operation requirements
+
 Standalone `flowsteward.firestore` host-v2 connector. This is Google Cloud Firestore document storage, not Firebase Realtime Database. No triggers, Rules management, arbitrary RPC execution, transactions, or automatic write retries.
 
 Supports `get_document`, `create_document`, `upsert_document`, `update_document`, `delete_document`, `list_documents`, `query_collection`, and `list_collections`. Select a matching project connection, configure Google Cloud `project`, optional `database` (default `(default)`), and `request_timeout_seconds` (1–30, default 15).
