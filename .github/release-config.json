@@ -15,7 +15,8 @@
     "tests/test_package.py",
     "tests/test_runtime.py",
     "tests/test_security_floor.py",
-    "tests/test_transport.py"
+    "tests/test_transport.py",
+    "tests/test_source_builder.py"
   ],
   "additional_assets": [],
   "payload_sources": []

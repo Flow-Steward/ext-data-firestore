@@ -30,15 +30,15 @@ Writes require a host durable `external_effect_id`; test mode validates inputs t
 
 ## Native build and packages
 
-`native/main.go` is a managed source adaptation built under the pinned Google MCP Toolbox v1.16.0 (`06ea49d9a487a72c22419b5a8d5c22c11f0d7485`) dependency lock. It replaces upstream high-level Firestore CRUD with the official Google low-level Firestore v1 GAPIC/protobuf client. Upstream high-level conversion removes type tags, Add generates random IDs, BulkWriter retries, and source initialization creates a Firebase Rules client; none of those implementations is included in the native runtime. The binary is not an unmodified Google Toolbox distribution or an MCP server. The Python adapter uses a bounded private single-request JSON protocol.
+`native/main.go` is a managed source adaptation built under the pinned Google MCP Toolbox v1.17.0 (`45ed205cc8682ed066c82e0b65bcd0e8fc3becce`) dependency lock. It replaces upstream high-level Firestore CRUD with the official Google low-level Firestore v1 GAPIC/protobuf client. Upstream high-level conversion removes type tags, Add generates random IDs, BulkWriter retries, and source initialization creates a Firebase Rules client; none of those implementations is included in the native runtime. The binary is not an unmodified Google Toolbox distribution or an MCP server. The Python adapter uses a bounded private single-request JSON protocol.
 
-Run `scripts/build_toolbox.sh` with a local pinned Toolbox checkout in `TOOLBOX_SOURCE` (default `/private/tmp/fs-toolbox-upstream-20261101`). It snapshots source over stdin into the pinned Go container and builds static Linux AMD64 and ARM64 executables. Builds use `--cpus 1 --memory 2g`. `toolbox-provenance.json` records source and binary digests; runtime verifies its packaged executable digest. Run `python3 scripts/package_extension.py --help` to produce target-specific installer ZIPs. Archives include exactly one matching native ELF binary and architecture metadata.
+Run `scripts/build_toolbox.sh` to fetch and verify the pinned upstream source, install the official Go 1.27.4 SDK in the pinned bootstrap container, run native regressions and build static Linux AMD64 and ARM64 executables. An existing clean pinned checkout may be supplied through `TOOLBOX_SOURCE` or `FS_TOOLBOX_SOURCE_DIR`. The container is limited to two CPUs and 4 GiB memory. `toolbox-provenance.json` records source and binary digests; runtime verifies its packaged executable digest. Run `python3 scripts/package_extension.py --help` to produce target-specific installer ZIPs. Archives include exactly one matching native ELF binary and architecture metadata.
 
 ## Validation limits
 
 Offline host contract tests mock the transport. Native tests validate official protobuf typed-value round trips and closed request decoding. No Google Cloud credentials were available during development: live authentication, IAM authorization, queries, and cloud CRUD were not exercised. These are contract/native-build checks, not evidence of live Google Cloud behavior. No emulator is accepted in the production connection contract.
 
-Primary references: [Firestore documents API](https://docs.cloud.google.com/firestore/docs/reference/rest/v1/projects.databases.documents), [Firestore Value types](https://docs.cloud.google.com/firestore/docs/reference/rest/v1/Value), [official Go client](https://pkg.go.dev/cloud.google.com/go/firestore/apiv1), [Google MCP Toolbox](https://github.com/googleapis/mcp-toolbox/tree/v1.16.0).
+Primary references: [Firestore documents API](https://docs.cloud.google.com/firestore/docs/reference/rest/v1/projects.databases.documents), [Firestore Value types](https://docs.cloud.google.com/firestore/docs/reference/rest/v1/Value), [official Go client](https://pkg.go.dev/cloud.google.com/go/firestore/apiv1), [Google MCP Toolbox](https://github.com/googleapis/mcp-toolbox/tree/v1.17.0).
 
 ## Changelog
 
@@ -53,14 +53,14 @@ Pushes to `main` and pull requests run the shared extension build workflow. The 
 After the versioned release commit is on `main`, publish by pushing its version tag:
 
 ```sh
-git tag v1.0.8
-git push origin v1.0.8
+git tag v1.0.9
+git push origin v1.0.9
 ```
 
 The release workflow runs the shared checks, builds the target archives and publishes the GitHub release and checksums. Do not move an existing tag. To rerun a release for an existing tag, dispatch the same workflow:
 
 ```sh
-gh workflow run release.yml --repo Flow-Steward/ext-data-firestore --ref main -f tag=v1.0.8
+gh workflow run release.yml --repo Flow-Steward/ext-data-firestore --ref main -f tag=v1.0.9
 ```
 
 The manifest, descriptor (when present), package version and tag must identify the same release. Release publication uses the workflow token; no additional repository secret is required by these callers.
@@ -70,3 +70,5 @@ The manifest, descriptor (when present), package version and tag must identify t
 The release recipe lists the standalone test files and individual test nodes explicitly, including package, source and provenance contracts. The shared runner clears repository pytest addopts so packaged contract checks are not silently deselected. This scope does not claim live provider or database verification.
 
 The selected contract suite uses mocked provider responses and does not require a provider account.
+
+CI builds both Linux architectures from the pinned upstream checkout; it does not restore older release binaries. `scripts/build_toolbox.sh` clones the pinned tag automatically, or accepts a clean exact-commit checkout through `TOOLBOX_SOURCE` / `FS_TOOLBOX_SOURCE_DIR`. The build generates `toolbox-provenance.json`, `SHA256SUMS` and selected compiler metadata, which are included in release archives.
