@@ -3,8 +3,8 @@
     {
       "action_id": "get_document",
       "workflow_visible": true,
-      "title": "Get Document",
-      "description": "Get one typed document with createTime and updateTime.",
+      "title": "Read a document by path",
+      "description": "Read one Firestore document with typed field values and create/update timestamps. Use a path relative to the configured database.",
       "required_scopes": [
         "extension:invoke"
       ],
@@ -46,8 +46,8 @@
     {
       "action_id": "create_document",
       "workflow_visible": true,
-      "title": "Create Document",
-      "description": "Create only at a caller-supplied stable path; fails if it exists.",
+      "title": "Create a document at a new path",
+      "description": "Create a document at a stable caller-supplied path using Firestore typed fields. Fails if that document already exists.",
       "required_scopes": [
         "extension:invoke"
       ],
@@ -94,8 +94,8 @@
     {
       "action_id": "upsert_document",
       "workflow_visible": true,
-      "title": "Upsert Document",
-      "description": "Replace all fields at the stable path, creating it if absent. Optional update_time prevents lost updates.",
+      "title": "Create or replace all document fields",
+      "description": "Create a missing document or replace every field at the selected path. Omitted fields are removed; an optional update timestamp guards against concurrent changes.",
       "required_scopes": [
         "extension:invoke"
       ],
@@ -147,8 +147,8 @@
     {
       "action_id": "update_document",
       "workflow_visible": true,
-      "title": "Update Document",
-      "description": "Patch supplied top-level fields of an existing document. Optional update_time precondition.",
+      "title": "Patch fields on an existing document",
+      "description": "Update the supplied top-level typed fields while preserving omitted fields. The document must exist; an optional update timestamp guards against concurrent changes.",
       "required_scopes": [
         "extension:invoke"
       ],
@@ -200,8 +200,8 @@
     {
       "action_id": "delete_document",
       "workflow_visible": true,
-      "title": "Delete Document",
-      "description": "Delete a stable document path, optionally guarded by exists or update_time.",
+      "title": "Delete a document by path",
+      "description": "Delete one document at the selected path, optionally checking existence or an update timestamp. Does not delete its subcollections.",
       "required_scopes": [
         "extension:invoke"
       ],
@@ -253,8 +253,8 @@
     {
       "action_id": "list_documents",
       "workflow_visible": true,
-      "title": "List Documents",
-      "description": "List one page from one collection; retain next_page_token for continuation.",
+      "title": "List a page of collection documents",
+      "description": "Read one page of up to 100 documents from one collection. Pass next_page_token to another call for continuation.",
       "required_scopes": [
         "extension:invoke"
       ],
@@ -306,8 +306,8 @@
     {
       "action_id": "query_collection",
       "workflow_visible": true,
-      "title": "Query Collection",
-      "description": "Query one collection with typed filters and bounded ordering; maximum 100 documents.",
+      "title": "Find collection documents by typed filters",
+      "description": "Read up to 100 documents from one collection using AND-combined typed filters and optional ordering. Firestore may require an index for the query.",
       "required_scopes": [
         "extension:invoke"
       ],
@@ -364,8 +364,8 @@
     {
       "action_id": "list_collections",
       "workflow_visible": true,
-      "title": "List Collections",
-      "description": "List one page of root or document subcollections.",
+      "title": "List root collections or subcollections",
+      "description": "Read a page of collection IDs at the database root or below a document. Pass next_page_token to continue the listing.",
       "required_scopes": [
         "extension:invoke"
       ],

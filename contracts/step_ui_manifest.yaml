@@ -2,181 +2,225 @@
   "forms": [
     {
       "operation_id": "get_document",
-      "title": "Get Document",
+      "title": "Read a document by path",
       "fields": [
         {
           "name": "document_path",
           "widget_type": "textarea",
-          "label": "Document Path",
-          "required": true
+          "label": "Document path",
+          "required": true,
+          "help_text": "Relative path with alternating collection/document segments in the configured database. Do not include projects/.../documents/.",
+          "placeholder": "orders/order_1042"
         }
       ]
     },
     {
       "operation_id": "create_document",
-      "title": "Create Document",
+      "title": "Create a document at a new path",
       "fields": [
         {
           "name": "document_path",
           "widget_type": "textarea",
-          "label": "Document Path",
-          "required": true
+          "label": "Document path",
+          "required": true,
+          "help_text": "Relative path with alternating collection/document segments in the configured database. Do not include projects/.../documents/.",
+          "placeholder": "orders/order_1042"
         },
         {
           "name": "fields",
           "widget_type": "json",
-          "label": "Fields",
-          "required": true
+          "label": "Firestore typed fields (JSON)",
+          "required": true,
+          "help_text": "Map field names to official Firestore Value objects, not plain JSON values. Integers use decimal strings. Patches update supplied top-level fields; replacement removes omitted fields.",
+          "placeholder": "{\"status\":{\"stringValue\":\"approved\"},\"total\":{\"integerValue\":\"42\"}}"
         }
       ]
     },
     {
       "operation_id": "upsert_document",
-      "title": "Upsert Document",
+      "title": "Create or replace all document fields",
       "fields": [
         {
           "name": "document_path",
           "widget_type": "textarea",
-          "label": "Document Path",
-          "required": true
+          "label": "Document path",
+          "required": true,
+          "help_text": "Relative path with alternating collection/document segments in the configured database. Do not include projects/.../documents/.",
+          "placeholder": "orders/order_1042"
         },
         {
           "name": "fields",
           "widget_type": "json",
-          "label": "Fields",
-          "required": true
+          "label": "Firestore typed fields (JSON)",
+          "required": true,
+          "help_text": "Map field names to official Firestore Value objects, not plain JSON values. Integers use decimal strings. Patches update supplied top-level fields; replacement removes omitted fields.",
+          "placeholder": "{\"status\":{\"stringValue\":\"approved\"},\"total\":{\"integerValue\":\"42\"}}"
         },
         {
           "name": "update_time",
           "widget_type": "textarea",
-          "label": "Update Time",
-          "required": false
+          "label": "Expected document update time",
+          "required": false,
+          "help_text": "Optional UTC RFC3339 updateTime copied from a prior read. The write fails if the document changed. Do not combine with the exists precondition.",
+          "placeholder": "2026-01-02T03:04:05.123456Z"
         }
       ]
     },
     {
       "operation_id": "update_document",
-      "title": "Update Document",
+      "title": "Patch fields on an existing document",
       "fields": [
         {
           "name": "document_path",
           "widget_type": "textarea",
-          "label": "Document Path",
-          "required": true
+          "label": "Document path",
+          "required": true,
+          "help_text": "Relative path with alternating collection/document segments in the configured database. Do not include projects/.../documents/.",
+          "placeholder": "orders/order_1042"
         },
         {
           "name": "fields",
           "widget_type": "json",
-          "label": "Fields",
-          "required": true
+          "label": "Firestore typed fields (JSON)",
+          "required": true,
+          "help_text": "Map field names to official Firestore Value objects, not plain JSON values. Integers use decimal strings. Patches update supplied top-level fields; replacement removes omitted fields.",
+          "placeholder": "{\"status\":{\"stringValue\":\"approved\"},\"total\":{\"integerValue\":\"42\"}}"
         },
         {
           "name": "update_time",
           "widget_type": "textarea",
-          "label": "Update Time",
-          "required": false
+          "label": "Expected document update time",
+          "required": false,
+          "help_text": "Optional UTC RFC3339 updateTime copied from a prior read. The write fails if the document changed. Do not combine with the exists precondition.",
+          "placeholder": "2026-01-02T03:04:05.123456Z"
         }
       ]
     },
     {
       "operation_id": "delete_document",
-      "title": "Delete Document",
+      "title": "Delete a document by path",
       "fields": [
         {
           "name": "document_path",
           "widget_type": "textarea",
-          "label": "Document Path",
-          "required": true
+          "label": "Document path",
+          "required": true,
+          "help_text": "Relative path with alternating collection/document segments in the configured database. Do not include projects/.../documents/.",
+          "placeholder": "orders/order_1042"
         },
         {
           "name": "exists",
           "widget_type": "boolean",
-          "label": "Exists",
-          "required": false
+          "label": "Require document existence",
+          "required": false,
+          "help_text": "Optional delete precondition: true requires the document to exist; false requires it to be absent. Omit for no existence check. Cannot be combined with Expected document update time.",
+          "placeholder": "true"
         },
         {
           "name": "update_time",
           "widget_type": "textarea",
-          "label": "Update Time",
-          "required": false
+          "label": "Expected document update time",
+          "required": false,
+          "help_text": "Optional UTC RFC3339 updateTime copied from a prior read. The write fails if the document changed. Do not combine with the exists precondition.",
+          "placeholder": "2026-01-02T03:04:05.123456Z"
         }
       ]
     },
     {
       "operation_id": "list_documents",
-      "title": "List Documents",
+      "title": "List a page of collection documents",
       "fields": [
         {
           "name": "collection_path",
           "widget_type": "textarea",
-          "label": "Collection Path",
-          "required": true
+          "label": "Collection path",
+          "required": true,
+          "help_text": "Relative collection path such as orders or customers/customer_42/orders. Queries read this collection only.",
+          "placeholder": "orders"
         },
         {
           "name": "limit",
           "widget_type": "number",
-          "label": "Limit",
-          "required": false
+          "label": "Maximum results",
+          "required": false,
+          "help_text": "Maximum records to return in this call, from 1 to 100. This is not an automatic all-pages read.",
+          "placeholder": "20"
         },
         {
           "name": "page_token",
           "widget_type": "textarea",
-          "label": "Page Token",
-          "required": false
+          "label": "Next-page token",
+          "required": false,
+          "help_text": "Omit for the first page. Copy result.next_page_token from the previous call to continue the same listing.",
+          "placeholder": ""
         }
       ]
     },
     {
       "operation_id": "query_collection",
-      "title": "Query Collection",
+      "title": "Find collection documents by typed filters",
       "fields": [
         {
           "name": "collection_path",
           "widget_type": "textarea",
-          "label": "Collection Path",
-          "required": true
+          "label": "Collection path",
+          "required": true,
+          "help_text": "Relative collection path such as orders or customers/customer_42/orders. Queries read this collection only.",
+          "placeholder": "orders"
         },
         {
           "name": "filters",
           "widget_type": "json",
-          "label": "Filters",
-          "required": false
+          "label": "Typed collection filters (JSON)",
+          "required": false,
+          "help_text": "Up to 10 {field,op,value} objects combined with AND. Use Firestore operators such as EQUAL and typed Value objects; IN requires an arrayValue. Query combinations may need a Firestore index.",
+          "placeholder": "[{\"field\":\"status\",\"op\":\"EQUAL\",\"value\":{\"stringValue\":\"approved\"}}]"
         },
         {
           "name": "limit",
           "widget_type": "number",
-          "label": "Limit",
-          "required": false
+          "label": "Maximum results",
+          "required": false,
+          "help_text": "Maximum records to return in this call, from 1 to 100. This is not an automatic all-pages read.",
+          "placeholder": "20"
         },
         {
           "name": "order_by",
           "widget_type": "json",
-          "label": "Order By",
-          "required": false
+          "label": "Result ordering (JSON)",
+          "required": false,
+          "help_text": "Up to 5 {field,direction} objects. Direction must be ASCENDING or DESCENDING; match Firestore query/index requirements.",
+          "placeholder": "[{\"field\":\"total\",\"direction\":\"DESCENDING\"}]"
         }
       ]
     },
     {
       "operation_id": "list_collections",
-      "title": "List Collections",
+      "title": "List root collections or subcollections",
       "fields": [
         {
           "name": "limit",
           "widget_type": "number",
-          "label": "Limit",
-          "required": false
+          "label": "Maximum results",
+          "required": false,
+          "help_text": "Maximum records to return in this call, from 1 to 100. This is not an automatic all-pages read.",
+          "placeholder": "20"
         },
         {
           "name": "page_token",
           "widget_type": "textarea",
-          "label": "Page Token",
-          "required": false
+          "label": "Next-page token",
+          "required": false,
+          "help_text": "Omit for the first page. Copy result.next_page_token from the previous call to continue the same listing.",
+          "placeholder": ""
         },
         {
           "name": "parent_path",
           "widget_type": "textarea",
-          "label": "Parent Path",
-          "required": false
+          "label": "Parent document path",
+          "required": false,
+          "help_text": "Leave empty to list root collections, or supply a relative document path to list its immediate subcollections.",
+          "placeholder": "customers/customer_42"
         }
       ]
     }
