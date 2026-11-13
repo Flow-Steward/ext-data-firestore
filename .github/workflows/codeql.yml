@@ -61,8 +61,8 @@ jobs:
           done
           git apply --directory=native scripts/patches/0000-security-baseline.patch
           printf '%s\n' \
-            'f547c08375f72e483c269c214f1a5190a8d81237687455549f829aac5a8d7d51  native/go.mod' \
-            '5c713561f5dce0e9c5c38977c925f54c94a4bec1095642cb6d04baaa612beacd  native/go.sum' \
+            'ce3c45e7f5d6cb877b357f035a70e3015d00818a5a1d354e714ea28340ae3bf9  native/go.mod' \
+            'a90a6478c08aa41ef8201589a0ec5ab4e12b9271e8cfee538bb199f3386e2553  native/go.sum' \
             | sha256sum -c -
       - name: Set up the Go compiler used by the Firestore build
         if: matrix.language == 'go'
@@ -89,8 +89,8 @@ jobs:
           set -euo pipefail
           go build -p 1 -buildvcs=false -o "$RUNNER_TEMP/firestore-codeql" .
           printf '%s\n' \
-            'f547c08375f72e483c269c214f1a5190a8d81237687455549f829aac5a8d7d51  go.mod' \
-            '5c713561f5dce0e9c5c38977c925f54c94a4bec1095642cb6d04baaa612beacd  go.sum' \
+            'ce3c45e7f5d6cb877b357f035a70e3015d00818a5a1d354e714ea28340ae3bf9  go.mod' \
+            'a90a6478c08aa41ef8201589a0ec5ab4e12b9271e8cfee538bb199f3386e2553  go.sum' \
             | sha256sum -c -
       - name: Analyze and upload results
         uses: github/codeql-action/analyze@33d7b85da1a04171e211befe2c739303b9a4c066 # v4.39.3
