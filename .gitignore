@@ -13,3 +13,4 @@ logs/
 /SHA256SUMS
 /scripts/go-toolchain-selected.json
 /packages/
+/bin/

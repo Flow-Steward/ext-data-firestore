@@ -30,3 +30,14 @@ def test_builder_rejects_unreviewed_upstream_source(tmp_path, extra, override):
     assert result.returncode != 0
     assert "docker must not run" not in result.stderr
     assert "clean" in result.stderr.lower(), result.stderr
+
+
+def test_generated_native_payload_is_untracked_and_ignored():
+    generated = [
+        "bin/linux-amd64/toolbox", "bin/linux-arm64/toolbox",
+        "toolbox-provenance.json", "SHA256SUMS", "scripts/go-toolchain-selected.json",
+    ]
+    tracked = subprocess.check_output(["git", "ls-files", "--", *generated], cwd=ROOT, text=True)
+    assert tracked == "", f"Generated native build outputs must not modify tracked source: {tracked}"
+    ignored = subprocess.check_output(["git", "check-ignore", "--no-index", "--", *generated], cwd=ROOT, text=True)
+    assert set(ignored.splitlines()) == set(generated)
