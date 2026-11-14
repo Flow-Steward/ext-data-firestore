@@ -105,7 +105,7 @@ def test_archive_is_reproducible_and_contains_one_declared_target(source, tmp_pa
     (source / "outside-link").symlink_to(tmp_path / "secret")
     first = module.package_extension(source, target, tmp_path / "one")
     second = module.package_extension(source, target, tmp_path / "two")
-    assert first.name == f"flowsteward.firestore-1.0.10-{target}.zip"
+    assert first.name == f"flowsteward.firestore-1.0.11-{target}.zip"
     assert first.read_bytes() == second.read_bytes()
     prefix = "flowsteward_firestore/"
     with zipfile.ZipFile(first) as archive:
