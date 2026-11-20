@@ -34,6 +34,8 @@ Writes require a host durable `external_effect_id`; test mode validates inputs t
 
 Run `scripts/build_toolbox.sh` to fetch and verify the pinned upstream source, install the official Go 1.27.4 SDK in the pinned bootstrap container, run native regressions and build static Linux AMD64 and ARM64 executables. An existing clean pinned checkout may be supplied through `TOOLBOX_SOURCE` or `FS_TOOLBOX_SOURCE_DIR`. The container is limited to two CPUs and 4 GiB memory. `toolbox-provenance.json` records source and binary digests; runtime verifies its packaged executable digest. Run `python3 scripts/package_extension.py --help` to produce target-specific installer ZIPs. Archives include exactly one matching native ELF binary and architecture metadata.
 
+The build mounts source read-only and uses container-local Go caches. It stages binaries and compiler metadata in a private directory before copying those files into the publisher checkout. The packager includes only explicitly listed release files and the selected runtime binary. Update the release file list and reviewed `third_party` notices when adding files or changing the native dependency graph.
+
 ## Validation limits
 
 Offline host contract tests mock the transport. Native tests validate official protobuf typed-value round trips and closed request decoding. No Google Cloud credentials were available during development: live authentication, IAM authorization, queries, and cloud CRUD were not exercised. These are contract/native-build checks, not evidence of live Google Cloud behavior. No emulator is accepted in the production connection contract.
@@ -48,19 +50,19 @@ Split the service-account PEM header validation literal so the catalog secret sc
 
 ## Automated CI and releases
 
-Pushes to `main` and pull requests run the shared extension build workflow. The checked-in `.github/release-config.json` selects both Linux targets, the repository's package script and test inputs. Missing native payloads and published-only inventory are restored from checksum-pinned release archives; tracked source files are preserved. The source packager retains its provenance checks.
+Pushes to `main` and pull requests run the shared extension build workflow. The checked-in `.github/release-config.json` selects both Linux targets, the repository's package script and test inputs. The workflow builds native payloads from the pinned source and packages them with their provenance.
 
 After the versioned release commit is on `main`, publish by pushing its version tag:
 
 ```sh
-git tag v1.0.10
-git push origin v1.0.10
+git tag v1.0.13
+git push origin v1.0.13
 ```
 
 The release workflow runs the shared checks, builds the target archives and publishes the GitHub release and checksums. Do not move an existing tag. To rerun a release for an existing tag, dispatch the same workflow:
 
 ```sh
-gh workflow run release.yml --repo Flow-Steward/ext-data-firestore --ref main -f tag=v1.0.10
+gh workflow run release.yml --repo Flow-Steward/ext-data-firestore --ref main -f tag=v1.0.13
 ```
 
 The manifest, descriptor (when present), package version and tag must identify the same release. Release publication uses the workflow token; no additional repository secret is required by these callers.

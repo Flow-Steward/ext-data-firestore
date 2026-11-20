@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.13
+
+- Isolate native build inputs and Go caches from the release checkout.
+- Restrict release archives to the reviewed files and the selected runtime binary.
+
 ## 1.0.12 - 2026-11-15
 
 ### Added

@@ -105,7 +105,7 @@ def test_archive_is_reproducible_and_contains_one_declared_target(source, tmp_pa
     (source / "outside-link").symlink_to(tmp_path / "secret")
     first = module.package_extension(source, target, tmp_path / "one")
     second = module.package_extension(source, target, tmp_path / "two")
-    assert first.name == f"flowsteward.firestore-1.0.12-{target}.zip"
+    assert first.name == f"flowsteward.firestore-1.0.13-{target}.zip"
     assert first.read_bytes() == second.read_bytes()
     prefix = "flowsteward_firestore/"
     with zipfile.ZipFile(first) as archive:
@@ -215,6 +215,20 @@ def test_custom_output_inside_source_does_not_include_previous_archives(source):
     first = module.package_extension(source, "linux-amd64", out_dir).read_bytes()
     second = module.package_extension(source, "linux-amd64", out_dir).read_bytes()
     assert first == second
+
+
+def test_only_declared_release_files_enter_the_archive(source, tmp_path):
+    unexpected = ("notes.txt", "contracts/draft.yaml", "third_party/draft/LICENSE")
+    for name in unexpected:
+        path = source / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("unpublished fixture\n")
+
+    archive_path = packager().package_extension(source, "linux-amd64", tmp_path / "out")
+
+    with zipfile.ZipFile(archive_path) as archive:
+        names = set(archive.namelist())
+    assert not names.intersection(f"flowsteward_firestore/{name}" for name in unexpected)
 
 
 @pytest.mark.parametrize("directory", ["bin/linux-amd64", "contracts"])

@@ -15,36 +15,100 @@ import zipfile
 from pathlib import Path
 
 EXTENSION_ID = "flowsteward.firestore"
-VERSION = "1.0.12"
+VERSION = "1.0.13"
 TOP_FOLDER = "flowsteward_firestore"
 SOURCE_DATE_EPOCH = 1794536030
 MAX_ARCHIVE_BYTES = 50 * 1024 * 1024
 MAX_UNCOMPRESSED_BYTES = 150 * 1024 * 1024
 MACHINES = {"linux-amd64": 62, "linux-arm64": 183}
-PAYLOAD_DIRECTORIES = frozenset(
-    {"bin", "contracts", "ui", "scripts", "tests", "wheels", "native", "third_party"}
+RELEASE_FILES = (
+    ".gitattributes",
+    ".gitignore",
+    "BRAND-ASSETS.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "NOTICE",
+    "README.md",
+    "SHA256SUMS",
+    "commands.py",
+    "contracts/connection_types.yaml",
+    "contracts/operation_manifest.yaml",
+    "contracts/step_ui_manifest.yaml",
+    "docs/workflow-actions.md",
+    "extension-descriptor.yaml",
+    "extension.yaml",
+    "health.py",
+    "icon.png",
+    "main.py",
+    "native/main.go",
+    "native/main_test.go",
+    "pyproject.toml",
+    "requirements-dev.txt",
+    "scripts/build-config.json",
+    "scripts/build_inside.sh",
+    "scripts/build_toolbox.sh",
+    "scripts/go-toolchain-selected.json",
+    "scripts/go-toolchain-sources.json",
+    "scripts/install-go-toolchain.sh",
+    "scripts/native_build_info.py",
+    "scripts/package_extension.py",
+    "scripts/patches/0000-approved-prebuilt-profiles.patch",
+    "scripts/patches/0000-security-baseline.patch",
+    "scripts/provenance.py",
+    "scripts/security-floor.json",
+    "tests/test_codeql_workflow.py",
+    "tests/test_contracts.py",
+    "tests/test_google_api_floor.py",
+    "tests/test_license.py",
+    "tests/test_package.py",
+    "tests/test_runtime.py",
+    "tests/test_security_floor.py",
+    "tests/test_source_builder.py",
+    "tests/test_transport.py",
+    "third_party/cloud.google.com_go_auth/LICENSE",
+    "third_party/cloud.google.com_go_auth_oauth2adapt/LICENSE",
+    "third_party/cloud.google.com_go_compute_metadata/LICENSE",
+    "third_party/cloud.google.com_go_firestore/LICENSE",
+    "third_party/cloud.google.com_go_longrunning/LICENSE",
+    "third_party/github.com_cespare_xxhash_v2/LICENSE.txt",
+    "third_party/github.com_felixge_httpsnoop/LICENSE.txt",
+    "third_party/github.com_go-logr_logr/LICENSE",
+    "third_party/github.com_go-logr_stdr/LICENSE",
+    "third_party/github.com_google_s2a-go/LICENSE.md",
+    "third_party/github.com_googleapis_enterprise-certificate-proxy/LICENSE",
+    "third_party/github.com_googleapis_gax-go_v2/LICENSE",
+    "third_party/github.com_googleapis_mcp-toolbox/LICENSE",
+    "third_party/go.opentelemetry.io_auto_sdk/LICENSE",
+    "third_party/go.opentelemetry.io_contrib_instrumentation_google.golang.org_grpc_otelgrpc/LICENSE",
+    "third_party/go.opentelemetry.io_contrib_instrumentation_net_http_otelhttp/LICENSE",
+    "third_party/go.opentelemetry.io_otel/LICENSE",
+    "third_party/go.opentelemetry.io_otel_log/LICENSE",
+    "third_party/go.opentelemetry.io_otel_metric/LICENSE",
+    "third_party/go.opentelemetry.io_otel_trace/LICENSE",
+    "third_party/go/LICENSE",
+    "third_party/golang.org_x_crypto/LICENSE",
+    "third_party/golang.org_x_net/LICENSE",
+    "third_party/golang.org_x_oauth2/LICENSE",
+    "third_party/golang.org_x_sync/LICENSE",
+    "third_party/golang.org_x_sys/LICENSE",
+    "third_party/golang.org_x_text/LICENSE",
+    "third_party/golang.org_x_time/LICENSE",
+    "third_party/google.golang.org_api/LICENSE",
+    "third_party/google.golang.org_genproto/LICENSE",
+    "third_party/google.golang.org_genproto_googleapis_api/LICENSE",
+    "third_party/google.golang.org_genproto_googleapis_rpc/LICENSE",
+    "third_party/google.golang.org_grpc/LICENSE",
+    "third_party/google.golang.org_protobuf/LICENSE",
+    "toolbox-provenance.json",
+    "toolbox.py",
+    "ui/actions/actions.yaml",
+    "ui/components/about.yaml",
+    "ui/pages/about.yaml",
+    "ui/pages/support.yaml",
+    "ui/ui_manifest.yaml",
+    "validation.py",
 )
-EXCLUDED_DIRECTORIES = frozenset(
-    {
-        ".git",
-        ".github",
-        ".venv",
-        "venv",
-        ".fs-python",
-        ".hypothesis",
-        ".mypy_cache",
-        ".pytest_cache",
-        ".ruff_cache",
-        "__pycache__",
-        "dev-wheels",
-        "dist",
-        "logs",
-        ".cache",
-    }
-)
-EXCLUDED_FILES = frozenset(
-    {".fs-package.yaml", ".fs-extension-install.yaml", "live-firestore.local.json"}
-)
+PAYLOAD_DIRECTORIES = {"bin", *(name.split("/", 1)[0] for name in RELEASE_FILES if "/" in name)}
 
 
 def sha256(path: Path) -> str:
@@ -56,26 +120,17 @@ def sha256(path: Path) -> str:
 
 
 def _payload_paths(root: Path, target: str) -> list[Path]:
-    paths = []
-    for directory, directories, files in os.walk(root, followlinks=False):
-        parent = Path(directory)
-        directories[:] = sorted(
-            name
-            for name in directories
-            if name not in EXCLUDED_DIRECTORIES and not (parent / name).is_symlink()
-        )
-        for name in sorted(files):
-            path = parent / name
-            relative = path.relative_to(root)
-            if path.is_symlink() or name in EXCLUDED_FILES or name.endswith((".pyc", ".pyo")):
-                continue
-            if relative.parts[0] == "bin" and relative != Path("bin") / target / "toolbox":
-                # Foreign targets are omitted; unexpected files in the selected target fail closed.
-                if len(relative.parts) > 1 and relative.parts[1] == target:
-                    raise ValueError("Target directory must contain exactly one native executable")
-                continue
+    binary = root / "bin" / target / "toolbox"
+    if any(path != binary for path in binary.parent.iterdir()):
+        raise ValueError("Target directory must contain exactly one native executable")
+    paths = [binary]
+    for name in RELEASE_FILES:
+        path = root / name
+        if path.is_symlink() or any((root / parent).is_symlink() for parent in Path(name).parents):
+            raise ValueError(f"Release path must not be a symlink: {name}")
+        if path.exists():
             if not path.is_file():
-                raise ValueError(f"Package input is not a regular file: {relative}")
+                raise ValueError(f"Package input is not a regular file: {name}")
             paths.append(path)
     return sorted(paths)
 
