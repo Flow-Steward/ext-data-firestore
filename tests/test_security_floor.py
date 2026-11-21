@@ -49,7 +49,7 @@ def test_shipped_binary_go_security_floor(target):
 def test_native_dependency_baseline_digest():
     baseline = ROOT / "scripts/patches/0000-security-baseline.patch"
     assert hashlib.sha256(baseline.read_bytes()).hexdigest() == (
-        "c9437f65a0b046d7bb2065f5f64b5f878e4341b1d7eedf3075d8afac5a186fa6"
+        "d381a7b0ca3f2040def710a245a7552503a79d6888ca6e41927f3c7df5936afe"
     )
     info = json.loads((ROOT / "toolbox-provenance.json").read_text())
     assert info["security_baseline"]["sha256"] == hashlib.sha256(baseline.read_bytes()).hexdigest()

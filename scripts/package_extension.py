@@ -15,7 +15,7 @@ import zipfile
 from pathlib import Path
 
 EXTENSION_ID = "flowsteward.firestore"
-VERSION = "1.0.13"
+VERSION = "1.0.14"
 TOP_FOLDER = "flowsteward_firestore"
 SOURCE_DATE_EPOCH = 1794536030
 MAX_ARCHIVE_BYTES = 50 * 1024 * 1024

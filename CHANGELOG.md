@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.14
+
+- Rebuild the Linux AMD64 and ARM64 Firestore adapters with `google.golang.org/api` v0.316.0 and `golang.org/x/net` v0.63.0.
+- Record the selected transitive Go modules and enforce the reviewed lock in native CI and CodeQL.
+
 ## 1.0.13
 
 - Isolate native build inputs and Go caches from the release checkout.
