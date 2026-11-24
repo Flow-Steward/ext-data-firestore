@@ -96,15 +96,15 @@ def verify_security(root: Path, target: str, provenance: dict) -> None:
     expected = {"path": f"bin/{target}/toolbox", "go_version": version, "modules": modules, "build_info": raw}
     if any(entry.get(key) != value for key, value in expected.items()):
         raise ValueError("native build information does not match provenance")
-    if provenance.get("commit") != "45ed205cc8682ed066c82e0b65bcd0e8fc3becce":
+    if provenance.get("commit") != "24762d91babd43d91afc3daeeece1cb446266c54":
         raise ValueError("native source commit does not match the reviewed baseline")
     if provenance.get("go_image") != "golang:1.27.3-bookworm@sha256:dc0963f32053e4bc451d24d87e3892d42d01021b61f093e98eb95c0352bb84b0":
         raise ValueError("native build image does not match the reviewed baseline")
-    if (provenance.get("source"), provenance.get("upstream_tag"), provenance.get("upstream_commit")) != ("https://github.com/googleapis/mcp-toolbox", "v1.17.0", "45ed205cc8682ed066c82e0b65bcd0e8fc3becce"):
+    if (provenance.get("source"), provenance.get("upstream_tag"), provenance.get("upstream_commit")) != ("https://github.com/googleapis/mcp-toolbox", "v1.18.0", "24762d91babd43d91afc3daeeece1cb446266c54"):
         raise ValueError("native upstream source identity does not match the reviewed baseline")
     profile = provenance.get("approved_profiles", {})
     profile_path = root / "scripts/patches/0000-approved-prebuilt-profiles.patch"
-    profile_digest = "df264c60006ad1a01812b427fb6a9593115ddd86227fc9522b8bae6731616aca"
+    profile_digest = "633a8c494bc01b2f9b8da00306246927b6b89d2ce78bf288269e53e8a60e5f84"
     if profile != {"patch": "scripts/patches/0000-approved-prebuilt-profiles.patch", "sha256": profile_digest} or not profile_path.is_file() or profile_path.is_symlink() or hashlib.sha256(profile_path.read_bytes()).hexdigest() != profile_digest:
         raise ValueError("native approved profile baseline is missing or changed")
     if provenance.get("go_image_role") != "bootstrap":
@@ -127,7 +127,7 @@ def verify_security(root: Path, target: str, provenance: dict) -> None:
     if not selected_path.is_file() or selected_path.is_symlink() or json.loads(selected_path.read_text()) != selected:
         raise ValueError("native selected compiler metadata is missing or changed")
     baseline = provenance.get("security_baseline", {})
-    digest = "d381a7b0ca3f2040def710a245a7552503a79d6888ca6e41927f3c7df5936afe"
+    digest = "13cf7ae5d547a3bad93e2b74d3991973f83cd927d34d03b6a7fa51f81bb62aad"
     if baseline != {"patch": "scripts/patches/0000-security-baseline.patch", "sha256": digest}:
         raise ValueError("native dependency baseline does not match provenance")
     path = root / baseline["patch"]
