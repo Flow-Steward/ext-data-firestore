@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.15 - 2026-11-24
+
+- Update the pinned Toolbox source to v1.18.0 and refresh the reviewed Linux AMD64 and ARM64 dependency locks.
+- Update Cloud SQL Connector, Spanner, LZ4 and the OpenTelemetry Auto SDK in the build graph.
+- Update development PyYAML to 6.0.4.
+
 ## 1.0.14
 
 - Rebuild the Linux AMD64 and ARM64 Firestore adapters with `google.golang.org/api` v0.316.0 and `golang.org/x/net` v0.63.0.
