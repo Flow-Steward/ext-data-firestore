@@ -5,7 +5,7 @@ sh /input/scripts/install-go-toolchain.sh /out/scripts/go-toolchain-selected.jso
 cp -a /upstream /src
 cd /src
 git apply /input/scripts/patches/0000-security-baseline.patch
-printf '%s\n' 'fcd54b9381c98a47bceec950aa9c81b6841dfe9d4b4d4d93911c4d6f27746858  go.mod' '19c2dfb5c69fda4894738b861013043f716360bbf37d878867c315dff18732cf  go.sum' | sha256sum -c -
+printf '%s\n' '0d7abba8b133f8c400ef711949b77019efa4af643762364d132f51c7d357a5b0  go.mod' '0576793ba5b46b5057a41886968ae5f458d0e15781b7a52f66717a9b93c8d057  go.sum' | sha256sum -c -
 export GOFLAGS=-mod=readonly GOTOOLCHAIN=local GOMAXPROCS=2
 export GOMODCACHE=/go/pkg/mod GOCACHE=/root/.cache/go-build
 test "$(go version | cut -d ' ' -f 3)" = go1.27.4
